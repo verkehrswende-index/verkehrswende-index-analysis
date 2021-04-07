@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodejs src/index.js",
+    "start": "nodejs --experimental-modules src/index.mjs",
     "build": "parcel ${PARCEL_BUILD_COMMAND:-build} --public-url . -d dist/ -o index.js index.js",
     "watch": "PARCEL_BUILD_COMMAND=watch npm run build",
     "test": "nodejs test.js"
@@ -12,11 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "delay": "^5.0.0",
     "finalhandler": "^1.1.2",
     "geojson-length": "^0.1.1",
-    "minimist": "^1.2.0",
     "node-fetch": "^2.6.1",
     "osmtogeojson": "^3.0.0-beta.4",
+    "p-queue": "^7.1.0",
     "parcel-bundler": "^1.12.5",
     "serve-static": "^1.14.1"
   }

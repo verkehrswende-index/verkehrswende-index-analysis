@@ -39,14 +39,7 @@ class BikeInfrastructure {
     ];
   }
 
-  run( callback ) {
-    const area = {
-      north: 50.115,
-      south: 50.1,
-      east: 8.76,
-      west: 8.74,
-    };
-
+  async start(area) {
     const all_ways = [
       {
         tag: "highway",
@@ -56,9 +49,9 @@ class BikeInfrastructure {
     ];
 
     // [diff:"2012-09-14T15:00:00Z","2012-09-21T15:00:00Z"]
-    // [out:json][timeout:30][bbox:${area.south},${area.west},${area.north},${area.east}];
+    // area[name~"^(Frankfurt|Offenbach) am Main$"]->.offenbach;
     const query = `
-area[name~"^(Frankfurt|Offenbach) am Main$"]->.offenbach;
+area[name="${area.name}"]->.offenbach;
 (
 ${this.filter.toQuery(all_ways)}
 );
@@ -67,25 +60,19 @@ out body;
 out skel qt;
 `;
 
-    console.log( query );
-
+    var data = await this.overpass.query( query );
+    console.log('data fetched, processing');
     const osmtogeojson = require( 'osmtogeojson' );
-
-    this.overpass.query( query, ( data ) => {
-      this.print( osmtogeojson( data ), callback );
-    } );
+    return this.process(osmtogeojson(data));
   };
 
-  print (data, callback) {
-    var stats = {};
+  process(data) {
+    var results = {};
     const geojsonLength = require('geojson-length');
-    console.log( 'got', data.features.length, 'features');
     for( const i in data.features ) {
       const feature = data.features[i];
       var length = geojsonLength(feature.geometry);
       feature.properties.length = length;
-      // console.log( feature );
-      // console.log( area );
       var cat = "unknown";
       if ( this.filter.match( feature, this.bicycle_ways)) {
         cat = "good";
@@ -94,16 +81,18 @@ out skel qt;
       } else if ( this.filter.match( feature, this.car_ways)) {
         cat = "car";
       }
-      if ( ! stats[cat] ) {
-        stats[cat] = 0;
+      if ( ! results[cat] ) {
+        results[cat] = 0;
       }
-      stats[cat] += length;
+      results[cat] += length;
       feature.properties.category = cat;
       data.features[i] = feature;
     }
-    console.log('calling callback');
-    callback(data);
-    // console.log( data.features );
+    results.score = (results.acceptable * 0.5 + results.good) / (results.car + results.acceptable + results.good);
+    return {
+      features: data,
+      results: results,
+    };
   }
 };
 

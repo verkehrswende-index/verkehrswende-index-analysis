@@ -12,10 +12,6 @@ area["admin_level"="8"]['de:regionalschluessel'];
 out;
 `, callback ) ;
   }
-
-  updateStore() {
-    console.log('update store');
-  }
 };
 
 module.exports = FetchLocations;
