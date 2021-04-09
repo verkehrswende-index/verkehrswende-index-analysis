@@ -5,7 +5,9 @@ class Store {
 
   read(path) {
     var fs = require('fs');
-    var data = fs.readFileSync(this.basePath + '/' + path);
+    var data = fs.readFileSync(this.basePath + '/' + path, function (err) {
+      if (err) return console.log(err);
+    });
     return JSON.parse(data);
   };
 

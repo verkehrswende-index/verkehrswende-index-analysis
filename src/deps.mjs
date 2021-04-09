@@ -6,6 +6,8 @@ import Overpass from './osm/overpass.js';
 import FetchLocations from './osm/queries/fetch-locations.js';
 import BikeInfrastructure from './analysis/bike-infrastructure.js';
 import FetchLocationsCmd from './commands/fetch-locations.js';
+import GenerateIndex from './commands/generate-index.mjs';
+import WriteAreaConfigs from './commands/write-area-configs.mjs';
 
 var deps = {};
 
@@ -42,6 +44,14 @@ deps['cmd.analysis'] = ( app ) => {
 
 deps['cmd.fetch-locations'] = ( app ) => {
   return new FetchLocationsCmd( app['osm.queries.fetch-locations'] );
+}
+
+deps['cmd.generate-index'] = ( app ) => {
+  return new GenerateIndex( app['geo.areas'], app['store'] );
+}
+
+deps['cmd.write-area-configs'] = ( app ) => {
+  return new WriteAreaConfigs( app['geo.areas'] );
 }
 
 export default deps;

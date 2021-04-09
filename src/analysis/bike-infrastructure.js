@@ -50,10 +50,10 @@ class BikeInfrastructure {
 
     // [diff:"2012-09-14T15:00:00Z","2012-09-21T15:00:00Z"]
     // area[name~"^(Frankfurt|Offenbach) am Main$"]->.offenbach;
+
     const query = `
-area[name="${area.name}"]->.offenbach;
 (
-${this.filter.toQuery(all_ways)}
+${this.filter.toQuery(all_ways,area.id)}
 );
 out body;
 >;

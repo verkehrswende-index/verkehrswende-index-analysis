@@ -1,8 +1,8 @@
 class Filter {
-  toQuery( filter ) {
+  toQuery( filter, areaId ) {
     var query = '';
     filter.forEach( (v) => {
-      query += 'way(area.offenbach)[';
+      query += `way(area:${areaId})[`;
       if ( 'tagRegexp' in v ) {
         query += `~"${v.tagRegexp}"`;
       } else {

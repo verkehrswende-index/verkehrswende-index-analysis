@@ -14,14 +14,21 @@ class Areas {
     this.store = store;
   }
   getAll() {
-    // var areas = this.store.read('kreisfreie_staedte.json').elements;
-    var areas = this.store.read('gemeinden_auswahl.json').elements;
+    var areas = this.store.read('kreisfreie_staedte.json').elements;
+    // var areas = this.store.read('gemeinden_auswahl.json').elements;
     for (const i in areas) {
       areas[i].tags.id = areas[i].id;
       areas[i] = areas[i].tags;
       areas[i].getSlug = Area.prototype.getSlug;
     }
     return areas;
+  }
+
+  writeAreaConfig(area) {
+    this.store.write(
+      `areas/${area.getSlug()}/config.json`,
+      area
+    );
   }
 }
 
