@@ -9,11 +9,15 @@ export default class Analysis {
     this.areas = areas;
   }
 
-  async call() {
+  async call(argv) {
     const queue = new PQueue({concurrency: 2});
     var analysis = 'bike_infrastructure';
     var areas = this.areas.getAll();
     for (const area of areas) {
+      if ( argv.areas
+           && ! argv.areas.split(',').includes(area.getSlug()) ) {
+        continue;
+      }
       queue.add(async () => {
         console.log("Analysing", area.name);
         var data = await this.list[analysis].start(area);

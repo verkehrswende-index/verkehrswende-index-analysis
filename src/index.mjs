@@ -8,7 +8,7 @@ async function main() {
   const deps = await import('./app.mjs');
   switch ( argv.cmd ) {
   case 'analysis':
-    await app('cmd.analysis').call();
+    await app('cmd.analysis').call(argv);
     break;
   case 'fetch-locations':
     await app('cmd.fetch-locations').call();
