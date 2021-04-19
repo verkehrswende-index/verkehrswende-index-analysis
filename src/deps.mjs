@@ -32,7 +32,7 @@ deps["osm.queries.fetch-locations"] = ( app ) => {
 };
 
 deps["analysis.bike-infrastructure"] = ( app ) => {
-  return new BikeInfrastructure( app['osm.overpass'], app['osm.filter'] );
+  return new BikeInfrastructure( app['osm.overpass'], app['osm.filter'], app['store'] );
 };
 
 deps['cmd.analysis'] = ( app ) => {

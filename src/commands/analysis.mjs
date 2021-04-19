@@ -20,12 +20,15 @@ export default class Analysis {
       }
       queue.add(async () => {
         console.log("Analysing", area.name);
-        var data = await this.list[analysis].start(area);
+        var timeSpan = null;
+        if ( argv.timeSpan === '1y' ) {
+          timeSpan = '1y';
+        }
+        if ( ! argv.cache ) {
+          await this.list[analysis].refresh(area,timeSpan);
+        }
+        await this.list[analysis].start(area,timeSpan);
         console.log("Done Analysing", area.name);
-        const basePath = `areas/${area.getSlug()}/analysis/${analysis}`;
-        this.store.write(basePath + '/features.json', data.features);
-        this.store.write(basePath + '/results.json', data.results);
-        console.log("Done Writing", area.name);
       });
     }
     while (queue.size) {

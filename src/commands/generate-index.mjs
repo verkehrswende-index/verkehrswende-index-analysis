@@ -17,7 +17,13 @@ export default class GenerateIndex {
       const results = this.store.read(
         `areas/${area.getSlug()}/analysis/bike_infrastructure/results.json`,
       );
-      console.log( results);
+      var results1Y = null;
+      try {
+        results1Y = this.store.read(
+          `areas/${area.getSlug()}/analysis/bike_infrastructure/results.1y.json`,
+        );
+      } catch(e) {
+      }
 
       index.areas.push(
         {
@@ -26,7 +32,11 @@ export default class GenerateIndex {
           scores: {
             'bike_infrastructure': results.score,
           },
+          scores1Y: {
+            'bike_infrastructure': results1Y ? results1Y.score : 0,
+          },
           score: results.score,
+          score1Y: results1Y ? results1Y.score : 0,
         }
       );
     }
