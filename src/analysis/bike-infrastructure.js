@@ -196,7 +196,10 @@ out skel qt;
     var results = {};
     const geojsonLength = require('geojson-length');
     var fullLength = 0;
+    var scoredLength = 0;
     var goodLength = 0;
+    var acceptableLength = 0;
+    var badLength = 0;
     for( const i in data.features ) {
       var score = 0;
       const feature = data.features[i];
@@ -208,14 +211,24 @@ out skel qt;
         continue;
       }
       fullLength += length;
-      goodLength += score * length;
+      if ( score >= 0.75 ) {
+        goodLength += length;
+      } else if ( score >= 0.5 ) {
+        acceptableLength += length;
+      } else {
+        badLength += length;
+      }
+      scoredLength += score * length;
       feature.properties.length = length;
       feature.properties.score = score;
       feature.properties.surfaceFactor = this.getSurfaceFactor(feature);
       feature.properties.wayFactor = this.getWayFactor(feature);
       data.features[i] = feature;
     }
-    results.score = goodLength/fullLength;
+    results.score = scoredLength/fullLength;
+    results.good = goodLength;
+    results.bad = badLength;
+    results.acceptable = acceptableLength;
     return {
       features: data,
       results,
