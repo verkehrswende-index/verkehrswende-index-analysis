@@ -26,10 +26,21 @@ ${query}
           'User-Agent': 'Verkehrswende-Index Analyser / https://verkehrswende-index.de/'
         },
       } )
+        .then( res => { if ( ! res.ok ) { console.error( res ); throw new Error('Network error '); }; return res; } )
         .then( res => res.json() )
+        .then( res => {
+          if ( res.remark ) {
+            throw new Error('Overpass API error: ' + res.remark);
+          }
+          return res;
+        } )
         .catch( error => {
-          delay(5000);
+          data = null;
+          console.error(error);
         } );
+      if ( data == null ) {
+        await delay(5000);
+      }
     }
     return data;
   };
