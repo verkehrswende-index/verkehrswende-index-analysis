@@ -15,7 +15,43 @@ class BikeInfrastructure {
     const all_ways = [
       {
         tag: "highway",
-        valueRegexp: "^(unclassified|cycleway|residential|living_street|motorway|trunk|primary|secondary|tertiary|path)$",
+        value: "unclassified",
+      },
+      {
+        tag: "highway",
+        value: "cycleway",
+      },
+      {
+        tag: "highway",
+        value: "residential",
+      },
+      {
+        tag: "highway",
+        value: "living_street",
+      },
+      {
+        tag: "highway",
+        value: "motorway",
+      },
+      {
+        tag: "highway",
+        value: "trunk",
+      },
+      {
+        tag: "highway",
+        value: "primary",
+      },
+      {
+        tag: "highway",
+        value: "secondary",
+      },
+      {
+        tag: "highway",
+        value: "tertiary",
+      },
+      {
+        tag: "highway",
+        value: "path",
       },
     ];
     const query = `
