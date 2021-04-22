@@ -11,7 +11,8 @@ class Overpass {
       date = "2020-04-14T00:00:00Z";
     }
     const OPquery = `
-[out:json][timeout:600]${date ? `[date:"${date}"]` : ''};
+[maxsize:2000000000]
+[out:json][timeout:6000]${date ? `[date:"${date}"]` : ''};
 ${query}
 `;
     console.log( OPquery );
