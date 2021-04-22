@@ -10,6 +10,7 @@ export default class GenerateIndex {
     var index = {
       areas: [],
     };
+    const mayors = this.store.read('mayors.json');
     for (const area of areas) {
 //      this.areas.writeAreaConfig(area);
 
@@ -29,6 +30,7 @@ export default class GenerateIndex {
         {
           name: area.name,
           slug: area.getSlug(),
+          mayorParty: mayors[area.getSlug()] || null,
           scores: {
             'bike_infrastructure': results.score,
           },

@@ -1,25 +1,28 @@
 class Area {
+  constructor(nameToSlug) {
+    this.nameToSlug = nameToSlug;
+  }
   getSlug() {
-    return this.name
-      .toLowerCase()
-      .replace(/ö/, 'oe')
-      .replace(/ü/, 'ue')
-      .replace(/ä/, 'ae')
-      .replace(/ /, '_');
+    return this.nameToSlug.getSlug(this.name);
   }
 };
 
 class Areas {
-  constructor(store) {
+  constructor(store, nameToSlug) {
     this.store = store;
+    this.nameToSlug = nameToSlug;
   }
   getAll() {
-    var areas = this.store.read('kreisfreie_staedte.json').elements;
-    // var areas = this.store.read('gemeinden_auswahl.json').elements;
-    for (const i in areas) {
-      areas[i].tags.id = areas[i].id;
-      areas[i] = areas[i].tags;
-      areas[i].getSlug = Area.prototype.getSlug;
+    var elements = this.store.read('kreisfreie_staedte.json').elements;
+    // var elements = this.store.read('gemeinden_auswahl.json').elements;
+    var areas = [];
+    for (const element of elements) {
+      var area = new Area(this.nameToSlug);
+      area.id = element.id;
+      for ( const tag in element.tags ) {
+        area[tag] = element.tags[tag];
+      }
+      areas.push(area);
     }
     return areas;
   }

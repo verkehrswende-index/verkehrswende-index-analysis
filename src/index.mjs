@@ -13,6 +13,9 @@ async function main() {
   case 'fetch-locations':
     await app('cmd.fetch-locations').call();
     break;
+  case 'fetch-mayors':
+    await app('cmd.fetch-mayors').call();
+    break;
   case 'generate-index':
     await app('cmd.generate-index').call();
     break;
