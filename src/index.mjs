@@ -10,6 +10,12 @@ async function main() {
   case 'analysis':
     await app('cmd.analysis').call(argv);
     break;
+  case 'fetch-car-licenses':
+    await app('cmd.fetch-car-licenses').call();
+    break;
+  case 'fetch-city-information':
+    await app('cmd.fetch-city-information').call();
+    break;
   case 'fetch-locations':
     await app('cmd.fetch-locations').call();
     break;

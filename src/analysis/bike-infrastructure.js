@@ -1,4 +1,6 @@
 // TODO cycleway opposite beachten! https://www.openstreetmap.org/way/24281756
+// TODO wege außerhalb stadtgrenzen nicht mitzählen
+// TODO müsste nicht weg mit geteiltem radweg auch zu autos gezählt werden?
 
 class BikeInfrastructure {
   constructor( overpass, filter, store ) {
@@ -70,7 +72,7 @@ out skel qt;
 
   async start(area,timeSpan) {
     var data = this.store.read(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`);
-    var processed = this.process(data);
+    var processed = this.process(area, data);
     this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, processed.features);
     this.store.write(this.getBasePath(area) + `/results${timeSpan ? `.${timeSpan}` : ''}.json`, processed.results);
   };
@@ -118,8 +120,12 @@ out skel qt;
   /**
    * Calculates the general way factor for the given feature.
    */
-  getWayFactor(feature) {
+  getWayFactor(area, feature) {
     var factor = 1;
+
+    const niceSpeedLimit = area.country === 'UK' ?
+          "^([1]?[0-9]|20)(?: mph)?$" : "^([1-2]?[0-9]|30)$";
+
     if (this.filter.match(
       feature,
       [
@@ -133,6 +139,19 @@ out skel qt;
       } else {
         factor = 0.75;
       }
+    } else if (! this.filter.match(
+      feature,
+      [
+        {
+          tag: "access",
+          value: "yes",
+        },
+        {
+          tag: "access",
+          value: null,
+        },
+      ] ) ) {
+      factor = 0;
     } else if (this.filter.match(
       feature,
       [
@@ -188,7 +207,7 @@ out skel qt;
         [
           {
             tag: "maxspeed",
-            valueRegexp: "^([1-3]?[0-9])$",
+            valueRegexp: niceSpeedLimit,
           },
         ])) {
         factor = 0.8;
@@ -200,7 +219,7 @@ out skel qt;
       [
         {
           tag: "maxspeed",
-          valueRegexp: "^([1-3]?[0-9])$",
+          valueRegexp: niceSpeedLimit,
         },
         {
           tag: "highway",
@@ -228,7 +247,7 @@ out skel qt;
     return factor;
   }
 
-  process(data) {
+  process(area, data) {
     var results = {};
     const geojsonLength = require('geojson-length');
     var fullLength = 0;
@@ -241,24 +260,26 @@ out skel qt;
       const feature = data.features[i];
       var length = geojsonLength(feature.geometry);
       score = this.getSurfaceFactor(feature)
-        * this.getWayFactor(feature);
-      if ( score === 0 ) {
-        // ignore this way
-        continue;
-      }
+        * this.getWayFactor(area, feature);
+      // console.log( feature, score );
+      // if ( feature.id === 'way/80868441' ) {
+      //   console.log( feature, score );
+      // }
       fullLength += length;
-      if ( score >= 0.75 ) {
-        goodLength += length;
-      } else if ( score >= 0.5 ) {
-        acceptableLength += length;
-      } else {
-        badLength += length;
+      if ( score > 0 ) {
+        if ( score >= 0.75 ) {
+          goodLength += length;
+        } else if ( score >= 0.5 ) {
+          acceptableLength += length;
+        } else {
+          badLength += length;
+        }
+        scoredLength += score * length;
       }
-      scoredLength += score * length;
       feature.properties.length = length;
       feature.properties.score = score;
       feature.properties.surfaceFactor = this.getSurfaceFactor(feature);
-      feature.properties.wayFactor = this.getWayFactor(feature);
+      feature.properties.wayFactor = this.getWayFactor(area, feature);
       data.features[i] = feature;
     }
     results.score = scoredLength/fullLength;

@@ -9,15 +9,17 @@
     "watch": "PARCEL_BUILD_COMMAND=watch npm run build",
     "lint": "eslint src",
     "prettify": "prettier --write src",
-    "test": "nodejs test.js"
+    "test": "nodejs --experimental-vm-modules node_modules/.bin/jest --config=src/jest.config.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "delay": "^5.0.0",
+    "exceljs": "^4.2.1",
     "finalhandler": "^1.1.2",
     "geojson-length": "^0.1.1",
     "jsdom": "^14.1.0",
+    "lighthouse": "^7.4.0",
     "node-fetch": "^2.6.1",
     "osmtogeojson": "^3.0.0-beta.4",
     "p-queue": "^7.1.0",
@@ -26,6 +28,7 @@
   },
   "devDependencies": {
     "eslint": "^7.24.0",
+    "jest": "^26.6.3",
     "prettier": "2.2.1"
   }
 }

@@ -12,19 +12,42 @@ class Areas {
     this.store = store;
     this.nameToSlug = nameToSlug;
   }
+
   getAll() {
     var elements = this.store.read('kreisfreie_staedte.json').elements;
     // var elements = this.store.read('gemeinden_auswahl.json').elements;
     var areas = [];
     for (const element of elements) {
-      var area = new Area(this.nameToSlug);
-      area.id = element.id;
       for ( const tag in element.tags ) {
-        area[tag] = element.tags[tag];
+        element[tag] = element.tags[tag];
       }
-      areas.push(area);
+      areas.push(this.createArea(element));
     }
     return areas;
+  }
+
+  createArea(data) {
+    // console.log('before', data);
+    var area = new Area(this.nameToSlug);
+    // console.log('before2', area);
+    for ( const tag in data ) {
+      // console.log(tag);
+      if ( area[tag] === undefined ) {
+        // console.log('ok');
+        area[tag] = data[tag];
+      }
+    }
+    // console.log('after',area );
+    return area;
+  }
+
+  getArea(slug) {
+    const data = this.store.read(`areas/${slug}/config.json`);
+    if ( ! data ) {
+      return null;
+    }
+    var ret = this.createArea(data);
+    return ret;
   }
 
   writeAreaConfig(area) {

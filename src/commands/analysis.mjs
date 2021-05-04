@@ -10,22 +10,28 @@ export default class Analysis {
   }
 
   async call(argv) {
-    const queue = new PQueue({concurrency: 2});
-    var analysis = 'bike_infrastructure';
+    const queue = new PQueue({concurrency: 4});
+    var analysis = argv.analysis;
     var areas = this.areas.getAll();
-    for (const area of areas) {
+    var timeSpan = null;
+    if ( argv.timeSpan === '1y' ) {
+      timeSpan = '1y';
+    }
+    if ( this.list[analysis].prepare ) {
+      await this.list[analysis].prepare(timeSpan);
+    }
+    for (const areaX of areas) {
+      const area = this.areas.getArea(areaX.getSlug());
       if ( argv.areas
            && ! argv.areas.split(',').includes(area.getSlug()) ) {
         continue;
       }
       queue.add(async () => {
         console.log("Analysing", area.name);
-        var timeSpan = null;
-        if ( argv.timeSpan === '1y' ) {
-          timeSpan = '1y';
-        }
         if ( ! argv.cache ) {
-          await this.list[analysis].refresh(area,timeSpan);
+          if ( this.list[analysis].refresh ) {
+            await this.list[analysis].refresh(area,timeSpan);
+          }
         }
         await this.list[analysis].start(area,timeSpan);
         console.log("Done Analysing", area.name);
