@@ -19,7 +19,9 @@ class Filter {
   }
 
   match(way,filters) {
-    for( let filter of filters ) {
+    filterLoop:
+    for( const filter of filters ) {
+      const tagMustNotExist = 'value' in filter && filter.value === null;
       for(var [name,value] of Object.entries(way.properties)) {
         // console.log( filter );
         if ( 'tagRegexp' in filter ) {
@@ -31,6 +33,8 @@ class Filter {
         } else if (name !== filter.tag) {
           // console.log('nomatch2');
           continue;
+        } else if (tagMustNotExist) {
+          continue filterLoop;
         }
         if ( 'valueRegexp' in filter ) {
           // console.log( way );
@@ -50,6 +54,9 @@ class Filter {
           return true;
         }
       };
+      if (tagMustNotExist) {
+        return true;
+      }
     };
     return false;
   }
