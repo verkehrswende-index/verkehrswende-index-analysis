@@ -68,7 +68,6 @@ export default class GenerateIndex {
           sumWeight1Y += analysis.weight;
           score1Y += analysis.weight * results1Y.score;
         }
-        console.log(results1Y.score, score1Y, sumWeight1Y);
       }
 
       index.areas.push(
@@ -83,9 +82,6 @@ export default class GenerateIndex {
           score1Y: score1Y / sumWeight1Y,
         }
       );
-      // if (area.getSlug() === 'berlin' ) {
-      //   break;
-      // }
     }
     index.areas.sort((a,b) => b.score - a.score);
     this.store.write(
