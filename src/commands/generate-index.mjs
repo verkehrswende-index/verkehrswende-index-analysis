@@ -27,7 +27,10 @@ export default class GenerateIndex {
           weight: 1,
         },
         'cars_per_resident': {
-          weight: 1,
+          weight: 0.25,
+        },
+        'stop_distance': {
+          weight: 0.125,
         },
       };
 
