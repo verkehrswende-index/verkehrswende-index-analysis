@@ -73,6 +73,7 @@ export default class GenerateIndex {
       index.areas.push(
         {
           name: area.name,
+          international: area.international,
           slug: area.getSlug(),
           population: area.population,
           mayorParty: mayors[area.getSlug()] || null,
