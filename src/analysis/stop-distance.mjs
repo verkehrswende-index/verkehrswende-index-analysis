@@ -17,6 +17,7 @@ export default class StopDistance {
     const query = `
 (
   way(area:${area.id})[building];
+  node(area:${area.id})[highway="bus_stop"];
   node(area:${area.id})[public_transport~"^(station|stop_position|platform)$"];
 );
 out center qt;
@@ -45,13 +46,18 @@ out center qt;
     var scoreSum = 0;
     var scoreValues = 0;
 
+    const isTransport = (feature) =>
+          "public_transport" in feature.properties
+          || ( "highway" in feature.properties
+               && feature.properties.highway === "bus_stop" );
+
     for( const feature of data.features ) {
-      if ("public_transport" in feature.properties) {
+      if(isTransport(feature)) {
         stops.push(feature);
       }
     }
     for( const feature of data.features ) {
-      if ("public_transport" in feature.properties) {
+      if (isTransport(feature)) {
         continue;
       }
       var min = Infinity;
