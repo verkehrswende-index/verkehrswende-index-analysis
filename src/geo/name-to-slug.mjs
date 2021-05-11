@@ -2,9 +2,9 @@ export default class NameToSlug {
   getSlug(name) {
     return name
       .toLowerCase()
-      .replace(/ö/, 'oe')
-      .replace(/ü/, 'ue')
-      .replace(/ä/, 'ae')
-      .replace(/ /, '_');
+      .replace(/ö/g, 'oe')
+      .replace(/ü/g, 'ue')
+      .replace(/ä/g, 'ae')
+      .replace(/ /g, '_');
   }
 }
