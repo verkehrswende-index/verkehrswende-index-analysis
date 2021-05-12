@@ -17,9 +17,6 @@ export default class Analysis {
     if ( argv.timeSpan === '1y' ) {
       timeSpan = '1y';
     }
-    if ( this.list[analysis].prepare ) {
-      await this.list[analysis].prepare(timeSpan);
-    }
     for (const areaX of areas) {
       const area = this.areas.getArea(areaX.getSlug());
       if ( argv.areas

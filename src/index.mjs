@@ -17,7 +17,7 @@ async function main() {
     await app('cmd.fetch-city-information').call();
     break;
   case 'fetch-locations':
-    await app('cmd.fetch-locations').call();
+    await app('cmd.fetch-locations').call(argv);
     break;
   case 'fetch-mayors':
     await app('cmd.fetch-mayors').call();

@@ -21,8 +21,7 @@ deps["analysis.cars-per-resident"] = ( app ) => {
 import StopDistance from '../analysis/stop-distance.mjs';
 deps["analysis.stop-distance"] = ( app ) => {
   return new StopDistance(
-    app['osm.overpass'],
-    app['osm.filter'],
+    app['osm.osmium'],
     app['store'],
   );
 };

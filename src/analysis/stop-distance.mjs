@@ -3,9 +3,8 @@ import geojsonLength from 'geojson-length';
 import Audit from 'lighthouse/lighthouse-core/audits/audit.js';
 
 export default class StopDistance {
-  constructor( overpass, filter, store ) {
-    this.overpass = overpass;
-    this.filter = filter;
+  constructor(osmium, store) {
+    this.osmium = osmium;
     this.store = store;
   }
 
@@ -14,17 +13,9 @@ export default class StopDistance {
   }
 
   async refresh(area, timeSpan) {
-    const query = `
-(
-  way(area:${area.id})[building];
-  node(area:${area.id})[highway="bus_stop"];
-  node(area:${area.id})[public_transport~"^(station|stop_position|platform)$"];
-);
-out center qt;
-`;
-    var data = await this.overpass.query(query, { timeSpan: timeSpan });
-    console.log('data fetched, processing');
-    this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, osmtogeojson(data));
+    var data = await this.osmium.query(area.getSlug(), 'n/highway=bus_stop w/building n/public_transport=station n/public_transport=stop_position n/public_transport=platform', { timeSpan: timeSpan });
+    this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, data);
+    console.log('data refreshed');
   }
 
   async start(area,timeSpan) {
@@ -35,6 +26,7 @@ out center qt;
   };
 
   process(area, data) {
+    console.log('processing data');
     var stops = [];
 
     // const a = 0.6127216848;
@@ -56,6 +48,9 @@ out center qt;
         stops.push(feature);
       }
     }
+    console.log(`${data.features.length} features`);
+    console.log(`${stops.length} stops`);
+
     for( const feature of data.features ) {
       if (isTransport(feature)) {
         continue;
