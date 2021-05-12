@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodejs --experimental-modules src/index.mjs",
+    "start": "nodejs --max-old-space-size=4096 --experimental-modules src/index.mjs",
     "build": "parcel ${PARCEL_BUILD_COMMAND:-build} --public-url . -d dist/ -o index.js index.js",
     "watch": "PARCEL_BUILD_COMMAND=watch npm run build",
     "lint": "eslint src",
