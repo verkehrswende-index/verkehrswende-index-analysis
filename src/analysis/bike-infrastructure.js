@@ -3,8 +3,8 @@
 // TODO müsste nicht weg mit geteiltem radweg auch zu autos gezählt werden?
 
 class BikeInfrastructure {
-  constructor( overpass, filter, store ) {
-    this.overpass = overpass;
+  constructor(osmium, filter, store) {
+    this.osmium = osmium;
     this.filter = filter;
     this.store = store;
   }
@@ -14,60 +14,15 @@ class BikeInfrastructure {
   }
 
   async refresh(area,timeSpan) {
-    const all_ways = [
+    var data = await this.osmium.query(
+      area.getSlug(),
+      'w/highway=unclassified,cycleway,path,tertiary,secondary,primary,trunk,motorway,living_street,residential',
       {
-        tag: "highway",
-        value: "unclassified",
-      },
-      {
-        tag: "highway",
-        value: "cycleway",
-      },
-      {
-        tag: "highway",
-        value: "residential",
-      },
-      {
-        tag: "highway",
-        value: "living_street",
-      },
-      {
-        tag: "highway",
-        value: "motorway",
-      },
-      {
-        tag: "highway",
-        value: "trunk",
-      },
-      {
-        tag: "highway",
-        value: "primary",
-      },
-      {
-        tag: "highway",
-        value: "secondary",
-      },
-      {
-        tag: "highway",
-        value: "tertiary",
-      },
-      {
-        tag: "highway",
-        value: "path",
-      },
-    ];
-    const query = `
-(
-${this.filter.toQuery(all_ways,area.id)}
-);
-out body;
->;
-out skel qt;
-`;
-    var data = await this.overpass.query( query, { timeSpan: timeSpan } );
-    console.log('data fetched, processing');
-    const osmtogeojson = require( 'osmtogeojson' );
-    this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, osmtogeojson(data));
+        timeSpan: timeSpan,
+      }
+    );
+    this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, data);
+    console.log('data refreshed');
   }
 
   async start(area,timeSpan) {

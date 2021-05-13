@@ -3,7 +3,7 @@ var deps = {};
 import BikeInfrastructure from '../analysis/bike-infrastructure.js';
 deps["analysis.bike-infrastructure"] = ( app ) => {
   return new BikeInfrastructure(
-    app['osm.overpass'],
+    app['osm.osmium'],
     app['osm.filter'],
     app['store'],
   );

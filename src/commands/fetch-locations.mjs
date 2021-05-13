@@ -1,5 +1,4 @@
 import {DOMParser} from "xmldom";
-import {existsSync} from "fs";
 
 export default class FetchLocations {
   constructor(osmium, store, nameToSlug) {
@@ -8,28 +7,8 @@ export default class FetchLocations {
     this.nameToSlug = nameToSlug;
   }
 
-  getDataPath(args) {
-    return `data/raw/osm/germany${args.timeSpan?'.1y':''}.osm.pbf`;
-  }
-
-  async getAreas(args) {
-    var cities = await this.osmium.exec(`tags-filter -f osm -R ${this.getDataPath(args)} r/de:place=city`.split(' ')) ;
-    cities = (new DOMParser()).parseFromString(cities, 'text/xml');
-    var areas = [];
-    const relations = cities.documentElement.getElementsByTagName('relation');
-    relations:
-    for(let i = 0; i < relations.length; i++) {
-      const id = relations[i].getAttribute('id');
-      const tags = relations[i].getElementsByTagName('tag');
-      for(let i = 0; i < tags.length; i++) {
-        if(tags[i].getAttribute('k') === 'name') {
-          const name = this.nameToSlug.getSlug(tags[i].getAttribute('v'));
-          areas.push( { id, name } );
-          continue relations;
-        }
-      }
-    };
-    return areas;
+  getDataPath(args,extract="germany") {
+    return `data/raw/osm/${extract}${args.timeSpan?'.1y':''}.osm.pbf`;
   }
 
   async call(argv) {
@@ -37,18 +16,31 @@ export default class FetchLocations {
     if ( argv.timeSpan === '1y' ) {
       timeSpan = '1y';
     }
-    const areas = await this.getAreas({timeSpan});
-    // TODO don't rewrite for 1y?
-    this.store.write(`areas.json`, areas);
-    for(const area of areas) {
-      const extractPath = `data/cache/osm/extracts/${area.name}${timeSpan?'.1y':''}.osm.pbf`;
-      if(existsSync(extractPath)) {
-        continue;
-      }
-      const dataPath = this.getDataPath({timeSpan});
-      const boundaryPath = `data/cache/osm/boundaries/${area.name}${timeSpan?'.1y':''}.osm.pbf`;
-      await this.osmium.exec(`getid -O -r -t ${dataPath} r${area.id} -o ${boundaryPath}`.split(' ')) ;
-      await this.osmium.exec(`extract -p ${boundaryPath} ${dataPath} -o ${extractPath}`.split(' ')) ;
+    var cities = null;
+    var cities = await this.osmium.exec(`tags-filter -f osm -R ${this.getDataPath(argv)} r/de:place=city`.split(' ')) ;
+    var internationals = await this.osmium.exec(`getid -f osm ${this.getDataPath(argv,'denmark')} r2192363`.split(' ')) ; // Kopenhagen
+    internationals = (new DOMParser()).parseFromString(internationals, 'text/xml');
+    cities = (new DOMParser()).parseFromString(cities, 'text/xml');
+    var areas = [];
+    const cityRelations = cities.documentElement.getElementsByTagName('relation');
+    const internationalsRelations = internationals.documentElement.getElementsByTagName('relation');
+    for(const relations of [cityRelations, internationalsRelations]) {
+      relations:
+      for(let i = 0; i < relations.length; i++) {
+        let area = {
+          extract: 'denmark',
+          id: relations[i].getAttribute('id'),
+        };
+        const tags = relations[i].getElementsByTagName('tag');
+        for(let i = 0; i < tags.length; i++) {
+          area[tags[i].getAttribute('k')] = tags[i].getAttribute('v');
+          // if(tags[i].getAttribute('k') === 'name') {
+          //   area.slug = this.nameToSlug.getSlug(area.name);
+          // }
+        }
+        areas.push(area);
+      };
     }
+    this.store.write(`areas.json`, areas);
   };
 }

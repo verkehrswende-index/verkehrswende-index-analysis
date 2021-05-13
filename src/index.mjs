@@ -22,6 +22,9 @@ async function main() {
   case 'fetch-mayors':
     await app('cmd.fetch-mayors').call();
     break;
+  case 'generate-extracts':
+    await app('cmd.generate-extracts').call(argv);
+    break;
   case 'generate-index':
     await app('cmd.generate-index').call();
     break;

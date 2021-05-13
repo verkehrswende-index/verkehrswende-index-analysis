@@ -14,8 +14,7 @@ class Areas {
   }
 
   getAll() {
-    var elements = this.store.read('kreisfreie_staedte.json').elements;
-    // var elements = this.store.read('gemeinden_auswahl.json').elements;
+    var elements = this.store.read('areas.json');
     var areas = [];
     for (const element of elements) {
       for ( const tag in element.tags ) {

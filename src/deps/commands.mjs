@@ -34,6 +34,16 @@ deps['cmd.fetch-mayors'] = ( app ) => {
   return new FetchMayorsCmd( app['store'], app['utils.fetcher'], app['geo.name-to-slug']);
 }
 
+import GenerateExtracts from '../commands/generate-extracts.mjs';
+deps["cmd.generate-extracts"] = (app) => {
+  return new GenerateExtracts(
+    app['geo.areas'],
+    app['osm.osmium'],
+    app['store'],
+    app['geo.name-to-slug'],
+  );
+};
+
 import GenerateIndex from '../commands/generate-index.mjs';
 deps['cmd.generate-index'] = ( app ) => {
   return new GenerateIndex( app['geo.areas'], app['store'] );
@@ -43,7 +53,7 @@ import WriteAreaConfigs from '../commands/write-area-configs.mjs';
 deps['cmd.write-area-configs'] = ( app ) => {
   return new WriteAreaConfigs(
     app['geo.areas'],
-    app['geo.city-information']
+    app['store'],
   );
 }
 

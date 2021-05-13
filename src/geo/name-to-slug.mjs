@@ -6,6 +6,7 @@ export default class NameToSlug {
       .replace(/ü/g, 'ue')
       .replace(/ä/g, 'ae')
       .replace(/[()]/g, '')
-      .replace(/ /g, '_');
+      .replace(/ /g, '_')
+      .replace(/ø/g, 'o');
   }
 }

@@ -10,7 +10,7 @@ export default class Analysis {
   }
 
   async call(argv) {
-    const queue = new PQueue({concurrency: 4});
+    const queue = new PQueue({concurrency: 1});
     var analysis = argv.analysis;
     var areas = this.areas.getAll();
     var timeSpan = null;

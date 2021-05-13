@@ -1,19 +1,27 @@
 export default class WriteAreaConfigs {
-  constructor( areas, cityInformation ) {
+  constructor(areas, store) {
     this.areas = areas;
-    this.cityInformation = cityInformation;
+    this.store = store;
   }
 
   call() {
     console.log('starting');
+    var cities = {};
+    for(const city of this.store.read(`index.json`).areas) {
+      cities[city.slug] = city;
+    }
     var areas = this.areas.getAll();
     for (const area of areas) {
       // first to have initial config.
       this.areas.writeAreaConfig(area);
-      const population = this.cityInformation.getPopulation(
-        area.getSlug(), '2020' );
-      if (population !== null) {
-        area.population = population;
+      const indexInfo = cities[area.getSlug()];
+      if(indexInfo) {
+        area.scores = indexInfo.scores;
+        area.scores1Y = indexInfo.scores1Y;
+        area.score = indexInfo.score;
+        area.score1Y = indexInfo.score1Y;
+        area.population = indexInfo.population;
+        area.mayorParty = indexInfo.mayorParty;
       }
       this.areas.writeAreaConfig(area);
     }

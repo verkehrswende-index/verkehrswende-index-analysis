@@ -1,6 +1,7 @@
 import osmtogeojson from 'osmtogeojson';
 import geojsonLength from 'geojson-length';
 import Audit from 'lighthouse/lighthouse-core/audits/audit.js';
+import Flatbush from 'flatbush';
 
 export default class StopDistance {
   constructor(osmium, store) {
@@ -13,7 +14,14 @@ export default class StopDistance {
   }
 
   async refresh(area, timeSpan) {
-    var data = await this.osmium.query(area.getSlug(), 'n/highway=bus_stop w/building n/public_transport=station n/public_transport=stop_position n/public_transport=platform', { timeSpan: timeSpan });
+    var data = await this.osmium.query(
+      area.getSlug(),
+      'n/highway=bus_stop w/building n/public_transport=station,stop_position,platform',
+      {
+        centerPoint: true,
+        timeSpan: timeSpan,
+      }
+    );
     this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, data);
     console.log('data refreshed');
   }
@@ -48,31 +56,56 @@ export default class StopDistance {
         stops.push(feature);
       }
     }
+
     console.log(`${data.features.length} features`);
     console.log(`${stops.length} stops`);
 
+    if(stops.length === 0) {
+      console.log('no stops');
+      var results = {};
+      results.score = 0;
+      return {
+        features: data,
+        results: {
+          score: 0,
+        },
+      };
+    }
+
+    const stopIndex = new Flatbush(stops.length);
+    for( const stop of stops ) {
+      stopIndex.add(
+        stop.geometry.coordinates[0],
+        stop.geometry.coordinates[1],
+        stop.geometry.coordinates[0],
+        stop.geometry.coordinates[1],
+      );
+    }
+    stopIndex.finish();
+
     for( const feature of data.features ) {
-      if (isTransport(feature)) {
+      if (isTransport(feature)
+         || feature.properties.building === "no") {
         continue;
       }
-      var min = Infinity;
-      for( const stop of stops ) {
-        const length = geojsonLength( {
-          type: "LineString",
-          coordinates: [
-            stop.geometry.coordinates,
-            feature.geometry.coordinates,
-          ],
-
-        } );
-        if(length < min) {
-          min = length;
-        }
-      }
-      feature.properties.stop_distance = min;
+      const nearestIndex = stopIndex.neighbors(
+        feature.geometry.coordinates[0],
+        feature.geometry.coordinates[1],
+        1
+      )[0];
+      const length = geojsonLength( {
+        type: "LineString",
+        coordinates: [
+          stops[nearestIndex].geometry.coordinates,
+          feature.geometry.coordinates,
+        ],
+      } );
+      // console.log(feature);
+      // console.log('l',length,nearestIndex);
+      feature.properties.stop_distance = length;
       feature.properties.score = Audit.computeLogNormalScore(
         { p10: 120, median: 400},
-        min
+        length
       );
       // console.log(min,feature.properties.score);
       // console.log(eouaaoeu);
