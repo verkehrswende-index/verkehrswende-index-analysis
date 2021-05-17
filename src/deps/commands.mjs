@@ -45,8 +45,12 @@ deps["cmd.generate-extracts"] = (app) => {
 };
 
 import GenerateIndex from '../commands/generate-index.mjs';
-deps['cmd.generate-index'] = ( app ) => {
-  return new GenerateIndex( app['geo.areas'], app['store'] );
+deps['cmd.generate-index'] = (app) => {
+  return new GenerateIndex(
+    app['geo.areas'],
+    app['store'],
+    app['geo.city-information'],
+  );
 }
 
 import WriteAreaConfigs from '../commands/write-area-configs.mjs';

@@ -1,7 +1,8 @@
 export default class GenerateIndex {
-  constructor( areas, store ) {
+  constructor(areas, store, cityInformation) {
     this.areas = areas;
     this.store = store;
+    this.cityInformation = cityInformation;
   }
 
   call() {
@@ -75,7 +76,7 @@ export default class GenerateIndex {
           name: area.name,
           international: area.international,
           slug: area.getSlug(),
-          population: area.population,
+          population: area.population || this.cityInformation.getPopulation(area.getSlug(), 2020),
           mayorParty: mayors[area.getSlug()] || null,
           scores,
           scores1Y,
