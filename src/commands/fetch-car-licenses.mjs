@@ -34,6 +34,6 @@ export default class FetchCarLicenses {
       const city = locationMatch[2];
       data.push({ zip, city, cars});
     } );
-    this.store.write(`cache/car_licenses/data.${year}.json`, data);
+    await this.store.write(`cache/car_licenses/data.${year}.json`, data);
   }
 };

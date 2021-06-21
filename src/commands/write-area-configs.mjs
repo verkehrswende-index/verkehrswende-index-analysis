@@ -4,13 +4,13 @@ export default class WriteAreaConfigs {
     this.store = store;
   }
 
-  call() {
+  async call() {
     console.log('starting');
     var cities = {};
-    for(const city of this.store.read(`index.json`).areas) {
+    for(const city of (await this.store.read(`index.json`)).areas) {
       cities[city.slug] = city;
     }
-    var areas = this.areas.getAll();
+    var areas = await this.areas.getAll();
     for (const area of areas) {
       // first to have initial config.
       this.areas.writeAreaConfig(area);

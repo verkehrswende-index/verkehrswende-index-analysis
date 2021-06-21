@@ -18,7 +18,7 @@ export default class GenerateExtracts {
     if ( argv.timeSpan === '1y' ) {
       timeSpan = '1y';
     }
-    const areas = this.areas.getAll();
+    const areas = await this.areas.getAll();
     for(const area of areas) {
       if( argv.areas
            && ! argv.areas.split(',').includes(area.getSlug()) ) {

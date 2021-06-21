@@ -32,6 +32,6 @@ export default class FetchMayors {
         parties[this.nameToSlug.getSlug(city)] = party;
       }
     }
-    this.store.write('/mayors.json', parties);
+    await this.store.write('/mayors.json', parties);
   };
 }

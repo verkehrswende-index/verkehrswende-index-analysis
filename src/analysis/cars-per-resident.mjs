@@ -11,7 +11,7 @@ export default class CarsPerResident {
 
   async start(area,timeSpan) {
     const year = timeSpan ? '2019' : '2020';
-    var licenses = this.store.read(`cache/car_licenses/data.${year}.json`);
+    var licenses = await this.store.read(`cache/car_licenses/data.${year}.json`);
     var found = false;
     var doubleMatch = false;
     var cars = 0;
@@ -31,13 +31,16 @@ export default class CarsPerResident {
     if ( ! found ) {
       console.log('no match found', area.getSlug());
     }
-    const population = this.cityInformation.getPopulation(area.getSlug(), year);
+    const population = await this.cityInformation.getPopulation(
+      area.getSlug(),
+      year
+    );
     const valid = found && ! doubleMatch && population !== null;
     const results = {
       'cars_per_resident': valid ? cars / population : null,
       'score': valid ? Math.max(0, 1 - (cars / population)) : null,
     }
-    this.store.write(this.getBasePath(area) + `/results${timeSpan ? `.${timeSpan}` : ''}.json`, results);
+    await this.store.write(this.getBasePath(area) + `/results${timeSpan ? `.${timeSpan}` : ''}.json`, results);
   };
 
   cleanCityName(name) {

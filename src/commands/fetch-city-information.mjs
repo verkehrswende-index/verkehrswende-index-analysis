@@ -33,6 +33,6 @@ export default class FetchCityInformation {
       }
       data[key] = { city, population};
     } );
-    this.store.write(`cache/city_information/data.${year}.json`, data);
+    await this.store.write(`cache/city_information/data.${year}.json`, data);
   }
 };

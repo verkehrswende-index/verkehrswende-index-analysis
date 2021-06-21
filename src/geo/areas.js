@@ -13,8 +13,8 @@ class Areas {
     this.nameToSlug = nameToSlug;
   }
 
-  getAll() {
-    var elements = this.store.read('areas.json');
+  async getAll() {
+    var elements = await this.store.read('areas.json');
     var areas = [];
     for (const element of elements) {
       for ( const tag in element.tags ) {
@@ -40,8 +40,8 @@ class Areas {
     return area;
   }
 
-  getArea(slug) {
-    const data = this.store.read(`areas/${slug}/config.json`);
+  async getArea(slug) {
+    const data = await this.store.read(`areas/${slug}/config.json`);
     if ( ! data ) {
       return null;
     }
@@ -49,8 +49,8 @@ class Areas {
     return ret;
   }
 
-  writeAreaConfig(area) {
-    this.store.write(
+  async writeAreaConfig(area) {
+    await this.store.write(
       `areas/${area.getSlug()}/config.json`,
       area
     );

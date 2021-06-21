@@ -5,16 +5,16 @@ export default class GenerateIndex {
     this.cityInformation = cityInformation;
   }
 
-  call() {
+  async call() {
     console.log('starting');
-    var areas = this.areas.getAll();
+    var areas = await this.areas.getAll();
     var index = {
       areas: [],
     };
-    const mayors = this.store.read('mayors.json');
+    const mayors = await this.store.read('mayors.json');
 
     for (const areaX of areas) {
-      var area = this.areas.getArea(areaX.getSlug());
+      var area = await this.areas.getArea(areaX.getSlug());
       console.log(area);
       // var area = areaX;
 
@@ -43,12 +43,12 @@ export default class GenerateIndex {
       for (var key in analysises) {
         console.log(key);
         let analysis = analysises[key];
-        const results = this.store.read(
+        const results = await this.store.read(
           `areas/${area.getSlug()}/analysis/${key}/results.json`,
         );
         var results1Y = null;
         try {
-          results1Y = this.store.read(
+          results1Y = await this.store.read(
             `areas/${area.getSlug()}/analysis/${key}/results.1y.json`,
           );
         } catch(e) {
@@ -71,12 +71,16 @@ export default class GenerateIndex {
         }
       }
 
+      const population = await this.cityInformation.getPopulation(
+        area.getSlug(),
+        2020
+      );
       index.areas.push(
         {
           name: area.name,
           international: area.international,
           slug: area.getSlug(),
-          population: area.population || this.cityInformation.getPopulation(area.getSlug(), 2020),
+          population: population || area.population,
           mayorParty: mayors[area.getSlug()] || null,
           scores,
           scores1Y,
@@ -86,7 +90,7 @@ export default class GenerateIndex {
       );
     }
     index.areas.sort((a,b) => b.score - a.score);
-    this.store.write(
+    await this.store.write(
       `index.json`,
       index
     );

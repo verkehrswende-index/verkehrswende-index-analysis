@@ -21,15 +21,15 @@ class BikeInfrastructure {
         timeSpan: timeSpan,
       }
     );
-    this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, data);
+    await this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, data);
     console.log('data refreshed');
   }
 
   async start(area,timeSpan) {
-    var data = this.store.read(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`);
+    var data = await this.store.read(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`);
     var processed = this.process(area, data);
-    this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, processed.features);
-    this.store.write(this.getBasePath(area) + `/results${timeSpan ? `.${timeSpan}` : ''}.json`, processed.results);
+    await this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, processed.features);
+    await this.store.write(this.getBasePath(area) + `/results${timeSpan ? `.${timeSpan}` : ''}.json`, processed.results);
   };
 
   /**

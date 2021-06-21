@@ -12,13 +12,15 @@ export default class Analysis {
   async call(argv) {
     const queue = new PQueue({concurrency: 1});
     var analysis = argv.analysis;
-    var areas = this.areas.getAll();
+    var areas = await this.areas.getAll();
+    console.log(areas.length, " known areas");
     var timeSpan = null;
     if ( argv.timeSpan === '1y' ) {
       timeSpan = '1y';
     }
     for (const areaX of areas) {
-      const area = this.areas.getArea(areaX.getSlug());
+      // console.log('check',areaX.getSlug());
+      const area = await this.areas.getArea(areaX.getSlug());
       if ( argv.areas
            && ! argv.areas.split(',').includes(area.getSlug()) ) {
         continue;
