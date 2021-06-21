@@ -5,8 +5,10 @@ export default class NameToSlug {
       .replace(/ö/g, 'oe')
       .replace(/ü/g, 'ue')
       .replace(/ä/g, 'ae')
-      .replace(/[()]/g, '')
+      .replace(/ß/g, 'ss')
       .replace(/ /g, '_')
-      .replace(/ø/g, 'o');
+      .replace(/\//g, '_')
+      .replace(/ø/g, 'o')
+      .replace(/[^a-z_-]/g, '');
   }
 }

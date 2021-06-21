@@ -2,5 +2,5 @@ import NameToSlug from './name-to-slug.mjs';
 
 test('Test slug generation', () => {
   var nameToSlug = new NameToSlug();
-  expect(nameToSlug.getSlug('Foo (Bär) fOO äöü')).toBe('foo_baer_foo_aeoeue');
+  expect(nameToSlug.getSlug('foo/bar Foo (Bär) /ß fOO ä-öü')).toBe('foo_bar_foo_baer_ss_foo_ae-oeue');
 });
