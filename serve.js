@@ -1,15 +1,13 @@
-var finalhandler = require('finalhandler')
-var http = require('http')
-var serveStatic = require('serve-static')
+var express = require("express");
+var expressStaticGzip = require("express-static-gzip");
+var app = express();
 
-// Serve up public/ftp folder
-var serve = serveStatic('data')
+app.use((req, res, next) => {
+  res.append('Access-Control-Allow-Origin', '*');
+  // res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  // res.append('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
-// Create server
-var server = http.createServer(function onRequest (req, res) {
-  res.setHeader( 'Access-Control-Allow-Origin', '*' );
-  serve(req, res, finalhandler(req, res))
-})
-
-// Listen
-server.listen(3000)
+app.use("/", expressStaticGzip("data/"));
+app.listen(3000);
