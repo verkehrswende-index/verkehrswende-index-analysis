@@ -1,4 +1,4 @@
-import Store from './store.js';
+import Store from './store.mjs';
 import NameToSlug from './geo/name-to-slug.mjs';
 import Areas from './geo/areas.js';
 import CityInformation from './geo/city-information.mjs';
