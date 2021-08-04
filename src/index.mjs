@@ -14,8 +14,11 @@ function printHelpAndExit() {
   console.log(`
 Options:
       --cmd=COMMAND                execute COMMAND
-      --extractDate=EXTRACT_DATE   date of extracts to use
       --help                       display this help and exit
+
+      --areas=AREAS                areas to consider, AREAS is a comma
+                                   seperated list of area slugs
+      --extractDate=EXTRACT_DATE   date of extracts to use
 
 COMMAND is one of the available commands:
   analysis
@@ -39,8 +42,9 @@ var argv = minimist(
   process.argv.slice(2),
   {
     string: [
-      "extractDate",
+      "areas",
       "cmd",
+      "extractDate",
     ],
     boolean: [
       "help",
@@ -82,6 +86,7 @@ async function main() {
       fail(`Missing --extractDate option`);
     }
     await app('cmd.generate-extracts').call({
+      areas: argv.areas ? argv.areas.split(',') : null,
       extractDate: argv.extractDate,
     });
     break;
