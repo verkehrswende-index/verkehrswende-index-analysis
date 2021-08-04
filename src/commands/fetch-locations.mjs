@@ -41,9 +41,10 @@ export default class FetchLocations {
    */
   async call(params) {
     const extracts = {
+      "germany/oberbayern": `getid -f osm ${this.getDataPath(params.extractDate,'germany/oberbayern')} r62428`, // Munich
       germany: `tags-filter -f osm -R ${this.getDataPath(params.extractDate)} r/de:place=city,town`,
-      denmark: `getid -f osm ${this.getDataPath(params.extractDate,'denmark')} r2192363`,
-      "france/ile-de-france": `getid -f osm ${this.getDataPath(params.extractDate,'france/ile-de-france')} r1641193`,
+      denmark: `getid -f osm ${this.getDataPath(params.extractDate,'denmark')} r2192363`, // Kopenhagen
+      "france/ile-de-france": `getid -f osm ${this.getDataPath(params.extractDate,'france/ile-de-france')} r1641193`, // Paris
     };
 
     var areas = [];
