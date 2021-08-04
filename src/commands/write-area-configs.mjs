@@ -1,3 +1,6 @@
+/**
+ * Reads all areas and writes each area config to data/areas.
+ */
 export default class WriteAreaConfigs {
   constructor(areas, store) {
     this.areas = areas;
@@ -5,7 +8,6 @@ export default class WriteAreaConfigs {
   }
 
   async call() {
-    console.log('starting');
     var cities = {};
     for(const city of (await this.store.read(`index.json`)).areas) {
       cities[city.slug] = city;
@@ -25,6 +27,5 @@ export default class WriteAreaConfigs {
       }
       this.areas.writeAreaConfig(area);
     }
-    console.log('done');
   };
 }

@@ -31,7 +31,7 @@ COMMAND is one of the available commands:
   generate-extracts       generates city extracts of OSM data. Requires
                           --extractDate
   generate-index
-  write-area-configs
+  write-area-configs      writes each area config to data/areas
 
 EXTRACT_DATE is specified as yymmdd, e.g. 200101
 `);
