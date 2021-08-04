@@ -44,14 +44,13 @@ export default class Osmium {
     const command = 'osmium';
     console.log(command,args.join(' '));
     var data = spawnSync(command, args, {maxBuffer: 1 * 1024 * 1024 * 1024 });
-    console.log('finished command');
     if(data.error) {
       throw Error(data.error);
     }
     if(data.status !== 0) {
       throw Error(`Osmium (${args.join(' ')}) failed: ` + data.status + ': ' + data.stderr);
     }
-    console.log('return');
+    console.log('finished osmium command');
     return data.stdout.toString();
   };
 };
