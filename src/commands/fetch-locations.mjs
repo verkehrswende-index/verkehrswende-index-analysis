@@ -1,7 +1,8 @@
 import {DOMParser} from "xmldom";
 
 /**
- * Retrieves all areas to consider (cities) from the main extracts.
+ * Extracts node tags for all cities to consider from OSM extracts and writes
+ * them to data/area.json
  */
 export default class FetchLocations {
   constructor(osmium, store, nameToSlug) {
@@ -10,28 +11,48 @@ export default class FetchLocations {
     this.nameToSlug = nameToSlug;
   }
 
-  getDataPath(args,extract="germany") {
-    return `data/raw/osm/${extract}${args.timeSpan?'.1y':''}.osm.pbf`;
+  /**
+   * Returns path to the raw extract data.
+   *
+   * @param {string} date - The date of the extract, e.g. "200101".
+   * @param {string} extract - The extract to use, e.g. "germany" or
+   * "france/ile-de-france".
+   */
+  getDataPath(date,extract="germany") {
+    return `data/raw/osm/${extract}-${date}.osm.pbf`;
   }
 
-  async call(argv) {
-    var timeSpan = null;
-    if ( argv.timeSpan === '1y' ) {
-      timeSpan = '1y';
-    }
-    var cities = null;
-    var cities = await this.osmium.exec(`tags-filter -f osm -R ${this.getDataPath(argv)} r/de:place=city,town`.split(' ')) ;
-    var internationals = await this.osmium.exec(`getid -f osm ${this.getDataPath(argv,'denmark')} r2192363`.split(' ')) ; // Kopenhagen
-    internationals = (new DOMParser()).parseFromString(internationals, 'text/xml');
+  /**
+   * Returns city relations using osmium.
+   *
+   * @param {string} params - The osmium command line parameters to use to extract the relations.
+   */
+  async getCityRelations(params) {
+    var cities = await this.osmium.exec(params.split(' ')) ;
     cities = (new DOMParser()).parseFromString(cities, 'text/xml');
+    return cities.documentElement.getElementsByTagName('relation');
+  }
+
+  /**
+   * Runs the command.
+   *
+   * @param {Object} params - Command parameters.
+   * @param {string} params.extractDate - Date of the extract to use.
+   */
+  async call(params) {
+    const extracts = {
+      germany: `tags-filter -f osm -R ${this.getDataPath(params.extractDate)} r/de:place=city,town`,
+      denmark: `getid -f osm ${this.getDataPath(params.extractDate,'denmark')} r2192363`,
+      "france/ile-de-france": `getid -f osm ${this.getDataPath(params.extractDate,'france/ile-de-france')} r1641193`,
+    };
+
     var areas = [];
     var seenAreas = {};
-    const cityRelations = cities.documentElement.getElementsByTagName('relation');
-    const internationalsRelations = internationals.documentElement.getElementsByTagName('relation');
-    for(const relations of [cityRelations, internationalsRelations]) {
+    for(const extract in extracts) {
+      const relations = await this.getCityRelations(extracts[extract]);
       for(let i = 0; i < relations.length; i++) {
         let area = {
-          extract: relations === internationalsRelations ? 'denmark' : null,
+          extract,
           id: relations[i].getAttribute('id'),
         };
         const tags = relations[i].getElementsByTagName('tag');
