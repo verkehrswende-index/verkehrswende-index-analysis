@@ -13,6 +13,15 @@ test('', () => {
       [
         {
           tag: "cycleway:left",
+        },
+      ]
+    )).toBe(true);
+  expect(
+    filter.match(
+      way,
+      [
+        {
+          tag: "cycleway:left",
           value: "lane",
         },
       ]
@@ -39,4 +48,44 @@ test('', () => {
         },
       ]
     )).toBe(true);
+  expect(
+    filter.match(
+      way,
+      [
+        {
+          and: [
+            [
+              {
+                tag: "cycleway:left",
+                value: "lane",
+              }
+            ],
+            [
+              {
+                tag: "notag",
+                value: null,
+              }
+            ],
+          ]
+        }
+      ]
+    )).toBe(true);
+  expect(
+    filter.match(
+      way,
+      [
+        {
+          and: [
+            [{
+              tag: "notag",
+              value: "foo",
+            }],
+            [{
+              tag: "notag",
+              value: null,
+            }],
+          ]
+        }
+      ]
+    )).toBe(false);
 });

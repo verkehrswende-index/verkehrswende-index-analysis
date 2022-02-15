@@ -1,4 +1,5 @@
 class Filter {
+  // 'and' not supported
   toQuery( filter, areaId ) {
     var query = '';
     filter.forEach( (v) => {
@@ -21,6 +22,12 @@ class Filter {
   match(way,filters) {
     filterLoop:
     for( const filter of filters ) {
+      if ( 'and' in filter ) {
+        if (filter.and.every((f) => this.match(way, f))) {
+          return true;
+        }
+        continue;
+      }
       const tagMustNotExist = 'value' in filter && filter.value === null;
       for(var [name,value] of Object.entries(way.properties)) {
         // console.log( filter );
@@ -44,13 +51,15 @@ class Filter {
             continue;
           }
           return true;
-        } else {
+        } else if ( 'value' in filter ) {
           if (value !== filter.value) {
             // console.log('nomatch4');
             continue;
           }
           // console.log( way );
           // console.log( filter );
+          return true;
+        } else {
           return true;
         }
       };
