@@ -45,7 +45,7 @@ export default class GenerateExtracts {
         params.extractDate
       }/${area.getSlug()}.osm.pbf`;
       if (await exists(extractPath)) {
-        console.log('extract already exists:', extractPath);
+        console.log("extract already exists:", extractPath);
         continue;
       }
       console.log("create", extractPath);
