@@ -108,7 +108,10 @@ export default class BikeInfrastructure {
         extractDate: params.extractDate,
       }
     );
-    await this.store.write(this.getBasePath(area) + `/features.json`, data);
+    await this.store.write(
+      this.getBasePath(area, params.extractDate) + `/features.json`,
+      data
+    );
     console.log("data refreshed");
   }
 
@@ -120,14 +123,16 @@ export default class BikeInfrastructure {
    * @param {string} params.extractDate - Date of the extract to use.
    */
   async start(area, params) {
-    var data = await this.store.read(this.getBasePath(area) + `/features.json`);
+    var data = await this.store.read(
+      this.getBasePath(area, params.extractDate) + `/features.json`
+    );
     var processed = this.process(area, data);
     await this.store.write(
-      this.getBasePath(area) + `/features.json`,
+      this.getBasePath(area, params.extractDate) + `/features.json`,
       processed.features
     );
     await this.store.write(
-      this.getBasePath(area) + `/results.json`,
+      this.getBasePath(area, params.extractDate) + `/results.json`,
       processed.results
     );
   }
