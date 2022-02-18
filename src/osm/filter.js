@@ -1,15 +1,15 @@
 class Filter {
   // 'and' not supported
-  toQuery( filter, areaId ) {
-    var query = '';
-    filter.forEach( (v) => {
+  toQuery(filter, areaId) {
+    var query = "";
+    filter.forEach((v) => {
       query += `way(area:${areaId})[`;
-      if ( 'tagRegexp' in v ) {
+      if ("tagRegexp" in v) {
         query += `~"${v.tagRegexp}"`;
       } else {
         query += `"${v.tag}"`;
       }
-      if ( 'valueRegexp' in v ) {
+      if ("valueRegexp" in v) {
         query += `~"${v.valueRegexp}"`;
       } else {
         query += `="${v.value}"`;
@@ -19,21 +19,20 @@ class Filter {
     return query;
   }
 
-  match(way,filters) {
-    filterLoop:
-    for( const filter of filters ) {
-      if ( 'and' in filter ) {
+  match(way, filters) {
+    filterLoop: for (const filter of filters) {
+      if ("and" in filter) {
         if (filter.and.every((f) => this.match(way, f))) {
           return true;
         }
         continue;
       }
-      const tagMustNotExist = 'value' in filter && filter.value === null;
-      for(var [name,value] of Object.entries(way.properties)) {
+      const tagMustNotExist = "value" in filter && filter.value === null;
+      for (var [name, value] of Object.entries(way.properties)) {
         // console.log( filter );
-        if ( 'tagRegexp' in filter ) {
+        if ("tagRegexp" in filter) {
           // console.log('nomatch?');
-          if (! name.match(new RegExp(filter.tagRegexp))) {
+          if (!name.match(new RegExp(filter.tagRegexp))) {
             // console.log('nomatch');
             continue;
           }
@@ -43,15 +42,15 @@ class Filter {
         } else if (tagMustNotExist) {
           continue filterLoop;
         }
-        if ( 'valueRegexp' in filter ) {
+        if ("valueRegexp" in filter) {
           // console.log( way );
           // console.log( filter );
-          if (! value.match(new RegExp(filter.valueRegexp))) {
+          if (!value.match(new RegExp(filter.valueRegexp))) {
             // console.log('nomatch3');
             continue;
           }
           return true;
-        } else if ( 'value' in filter ) {
+        } else if ("value" in filter) {
           if (value !== filter.value) {
             // console.log('nomatch4');
             continue;
@@ -62,13 +61,13 @@ class Filter {
         } else {
           return true;
         }
-      };
+      }
       if (tagMustNotExist) {
         return true;
       }
-    };
+    }
     return false;
   }
-};
+}
 
 module.exports = Filter;

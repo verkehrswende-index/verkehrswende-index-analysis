@@ -9,7 +9,7 @@ export default class WriteAreaConfigs {
 
   async call() {
     var cities = {};
-    for(const city of (await this.store.read(`index.json`)).areas) {
+    for (const city of (await this.store.read(`index.json`)).areas) {
       cities[city.slug] = city;
     }
     var areas = await this.areas.getAll();
@@ -17,7 +17,7 @@ export default class WriteAreaConfigs {
       // first to have initial config.
       this.areas.writeAreaConfig(area);
       const indexInfo = cities[area.getSlug()];
-      if(indexInfo) {
+      if (indexInfo) {
         area.scores = indexInfo.scores;
         area.scores1Y = indexInfo.scores1Y;
         area.score = indexInfo.score;
@@ -27,5 +27,5 @@ export default class WriteAreaConfigs {
       }
       this.areas.writeAreaConfig(area);
     }
-  };
+  }
 }

@@ -1,8 +1,8 @@
-import app from './app.mjs';
+import app from "./app.mjs";
 
-import minimist from 'minimist';
+import minimist from "minimist";
 
-function fail(msg, suggestHelp=true) {
+function fail(msg, suggestHelp = true) {
   console.error(msg);
   if (suggestHelp) {
     console.error(`Try '--help' for more information.`);
@@ -40,76 +40,65 @@ EXTRACT_DATE is specified as yymmdd, e.g. 200101
   process.exit();
 }
 
-var argv = minimist(
-  process.argv.slice(2),
-  {
-    string: [
-      "analysis",
-      "areas",
-      "cmd",
-      "extractDate",
-    ],
-    boolean: [
-      "help",
-      "use-cache",
-    ],
-    unknown: (param) => {
-      fail(`Unrecognized option '${param}'`);
-    }
-  }
-);
+var argv = minimist(process.argv.slice(2), {
+  string: ["analysis", "areas", "cmd", "extractDate"],
+  boolean: ["help", "use-cache"],
+  unknown: (param) => {
+    fail(`Unrecognized option '${param}'`);
+  },
+});
 
 async function main() {
-  const deps = await import('./app.mjs');
-  if ( argv.help || ! argv.cmd ) {
+  const deps = await import("./app.mjs");
+  if (argv.help || !argv.cmd) {
     printHelpAndExit();
   }
-  switch ( argv.cmd ) {
-  case 'analysis':
-    if (! argv.analysis) {
-      fail(`Missing --analysis option`);
-    }
-    await app('cmd.analysis').call({
-      analysis: argv.analysis,
-      areas: argv.areas ? argv.areas.split(',') : null,
-      extractDate: argv.extractDate,
-      useCache: argv['use-cache'] ? true : false,
-    });
-    break;
-  case 'fetch-car-licenses':
-    await app('cmd.fetch-car-licenses').call();
-    break;
-  case 'fetch-city-information':
-    await app('cmd.fetch-city-information').call();
-    break;
-  case 'fetch-locations':
-    if (! argv.extractDate) {
-      fail(`Missing --extractDate option`);
-    }
-    await app('cmd.fetch-locations').call({
-      extractDate: argv.extractDate,
-    });
-    break;
-  case 'fetch-mayors':
-    await app('cmd.fetch-mayors').call();
-    break;
-  case 'generate-extracts':
-    if (! argv.extractDate) {
-      fail(`Missing --extractDate option`);
-    }
-    await app('cmd.generate-extracts').call({
-      areas: argv.areas ? argv.areas.split(',') : null,
-      extractDate: argv.extractDate,
-    });
-    break;
-  case 'generate-index':
-    await app('cmd.generate-index').call();
-    break;
-  case 'write-area-configs':
-    await app('cmd.write-area-configs').call();
-    break;
-  default:
-    fail(`Unrecognized command '${argv.cmd}'`);
+  switch (argv.cmd) {
+    case "analysis":
+      if (!argv.analysis) {
+        fail(`Missing --analysis option`);
+      }
+      await app("cmd.analysis").call({
+        analysis: argv.analysis,
+        areas: argv.areas ? argv.areas.split(",") : null,
+        extractDate: argv.extractDate,
+        useCache: argv["use-cache"] ? true : false,
+      });
+      break;
+    case "fetch-car-licenses":
+      await app("cmd.fetch-car-licenses").call();
+      break;
+    case "fetch-city-information":
+      await app("cmd.fetch-city-information").call();
+      break;
+    case "fetch-locations":
+      if (!argv.extractDate) {
+        fail(`Missing --extractDate option`);
+      }
+      await app("cmd.fetch-locations").call({
+        extractDate: argv.extractDate,
+      });
+      break;
+    case "fetch-mayors":
+      await app("cmd.fetch-mayors").call();
+      break;
+    case "generate-extracts":
+      if (!argv.extractDate) {
+        fail(`Missing --extractDate option`);
+      }
+      await app("cmd.generate-extracts").call({
+        areas: argv.areas ? argv.areas.split(",") : null,
+        extractDate: argv.extractDate,
+      });
+      break;
+    case "generate-index":
+      await app("cmd.generate-index").call();
+      break;
+    case "write-area-configs":
+      await app("cmd.write-area-configs").call();
+      break;
+    default:
+      fail(`Unrecognized command '${argv.cmd}'`);
   }
 }
 

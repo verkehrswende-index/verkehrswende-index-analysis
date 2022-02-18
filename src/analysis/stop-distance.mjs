@@ -1,22 +1,22 @@
-import osmtogeojson from 'osmtogeojson';
-import geojsonLength from 'geojson-length';
-import Audit from 'lighthouse/lighthouse-core/audits/audit.js';
-import Flatbush from 'flatbush';
+import osmtogeojson from "osmtogeojson";
+import geojsonLength from "geojson-length";
+import Audit from "lighthouse/lighthouse-core/audits/audit.js";
+import Flatbush from "flatbush";
 
 const filterConfigs = {
   stop: [
     {
-      tag: 'highway',
-      value: 'bus_stop',
+      tag: "highway",
+      value: "bus_stop",
     },
     {
-      tag: 'public_transport',
-      valueRegexp: '^(station|stop_position|platform)$',
+      tag: "public_transport",
+      valueRegexp: "^(station|stop_position|platform)$",
     },
   ],
   building: [
     {
-      tag: 'building',
+      tag: "building",
     },
   ],
 };
@@ -36,25 +36,38 @@ export default class StopDistance {
   async refresh(area, timeSpan) {
     var data = await this.osmium.query(
       area.getSlug(),
-      'n/highway=bus_stop w/building n/public_transport=station,stop_position,platform',
+      "n/highway=bus_stop w/building n/public_transport=station,stop_position,platform",
       {
         centerPoint: true,
         timeSpan: timeSpan,
       }
     );
-    await this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, data);
-    console.log('data refreshed');
+    await this.store.write(
+      this.getBasePath(area) +
+        `/features${timeSpan ? `.${timeSpan}` : ""}.json`,
+      data
+    );
+    console.log("data refreshed");
   }
 
-  async start(area,timeSpan) {
-    var data = await this.store.read(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`);
+  async start(area, timeSpan) {
+    var data = await this.store.read(
+      this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ""}.json`
+    );
     var processed = this.process(area, data);
-    await this.store.write(this.getBasePath(area) + `/features${timeSpan ? `.${timeSpan}` : ''}.json`, processed.features);
-    await this.store.write(this.getBasePath(area) + `/results${timeSpan ? `.${timeSpan}` : ''}.json`, processed.results);
-  };
+    await this.store.write(
+      this.getBasePath(area) +
+        `/features${timeSpan ? `.${timeSpan}` : ""}.json`,
+      processed.features
+    );
+    await this.store.write(
+      this.getBasePath(area) + `/results${timeSpan ? `.${timeSpan}` : ""}.json`,
+      processed.results
+    );
+  }
 
   process(area, data) {
-    console.log('processing data');
+    console.log("processing data");
     var stops = [];
 
     // const a = 0.6127216848;
@@ -67,12 +80,12 @@ export default class StopDistance {
     var scoreValues = 0;
 
     const isTransport = (feature) =>
-          "public_transport" in feature.properties
-          || ( "highway" in feature.properties
-               && feature.properties.highway === "bus_stop" );
+      "public_transport" in feature.properties ||
+      ("highway" in feature.properties &&
+        feature.properties.highway === "bus_stop");
 
-    for( const feature of data.features ) {
-      if(isTransport(feature)) {
+    for (const feature of data.features) {
+      if (isTransport(feature)) {
         stops.push(feature);
       }
     }
@@ -80,8 +93,8 @@ export default class StopDistance {
     console.log(`${data.features.length} features`);
     console.log(`${stops.length} stops`);
 
-    if(stops.length === 0) {
-      console.log('no stops');
+    if (stops.length === 0) {
+      console.log("no stops");
       var results = {};
       results.score = 0;
       return {
@@ -93,19 +106,18 @@ export default class StopDistance {
     }
 
     const stopIndex = new Flatbush(stops.length);
-    for( const stop of stops ) {
+    for (const stop of stops) {
       stopIndex.add(
         stop.geometry.coordinates[0],
         stop.geometry.coordinates[1],
         stop.geometry.coordinates[0],
-        stop.geometry.coordinates[1],
+        stop.geometry.coordinates[1]
       );
     }
     stopIndex.finish();
 
-    for( const feature of data.features ) {
-      if (isTransport(feature)
-         || feature.properties.building === "no") {
+    for (const feature of data.features) {
+      if (isTransport(feature) || feature.properties.building === "no") {
         continue;
       }
       const nearestIndex = stopIndex.neighbors(
@@ -113,26 +125,26 @@ export default class StopDistance {
         feature.geometry.coordinates[1],
         1
       )[0];
-      const length = geojsonLength( {
+      const length = geojsonLength({
         type: "LineString",
         coordinates: [
           stops[nearestIndex].geometry.coordinates,
           feature.geometry.coordinates,
         ],
-      } );
+      });
       // console.log(feature);
       // console.log('l',length,nearestIndex);
       feature.properties.stop_distance = length;
       feature.properties.score = Audit.computeLogNormalScore(
-        { p10: 120, median: 400},
+        { p10: 120, median: 400 },
         length
       );
       // console.log(min,feature.properties.score);
       // console.log(eouaaoeu);
       // feature.properties.score = 1-C(min);
       // if (feature.properties.score > 1 ) {
-        // console.log('min',min,'score',feature.properties.score,'C',C(min),'E',E(min),'t',t(min));
-        // console.log(aoeuoaeu);
+      // console.log('min',min,'score',feature.properties.score,'C',C(min),'E',E(min),'t',t(min));
+      // console.log(aoeuoaeu);
       // }
       scoreSum += feature.properties.score;
       scoreValues++;
@@ -148,7 +160,7 @@ export default class StopDistance {
     //   feature.properties.wayFactor = this.getWayFactor(area, feature);
     //   data.features[i] = feature;
     // }
-    results.score = scoreSum/scoreValues;
+    results.score = scoreSum / scoreValues;
     console.log(scoreSum, scoreValues, results.score);
     // results.good = goodLength;
     // results.bad = badLength;
@@ -158,4 +170,4 @@ export default class StopDistance {
       results,
     };
   }
-};
+}

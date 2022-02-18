@@ -1,91 +1,83 @@
-import Filter from './filter.js';
+import Filter from "./filter.js";
 
-test('', () => {
+test("", () => {
   var filter = new Filter();
   var way = {
-    properties:  {
-      'cycleway:left': 'lane',
-    }
+    properties: {
+      "cycleway:left": "lane",
+    },
   };
   expect(
-    filter.match(
-      way,
-      [
-        {
-          tag: "cycleway:left",
-        },
-      ]
-    )).toBe(true);
+    filter.match(way, [
+      {
+        tag: "cycleway:left",
+      },
+    ])
+  ).toBe(true);
   expect(
-    filter.match(
-      way,
-      [
-        {
-          tag: "cycleway:left",
-          value: "lane",
-        },
-      ]
-    )).toBe(true);
+    filter.match(way, [
+      {
+        tag: "cycleway:left",
+        value: "lane",
+      },
+    ])
+  ).toBe(true);
 
   expect(
-    filter.match(
-      way,
-      [
-        {
-          tag: "cycleway:left",
-          value: null,
-        },
-      ]
-    )).toBe(false);
+    filter.match(way, [
+      {
+        tag: "cycleway:left",
+        value: null,
+      },
+    ])
+  ).toBe(false);
 
   expect(
-    filter.match(
-      way,
-      [
-        {
-          tag: "notag",
-          value: null,
-        },
-      ]
-    )).toBe(true);
+    filter.match(way, [
+      {
+        tag: "notag",
+        value: null,
+      },
+    ])
+  ).toBe(true);
   expect(
-    filter.match(
-      way,
-      [
-        {
-          and: [
-            [
-              {
-                tag: "cycleway:left",
-                value: "lane",
-              }
-            ],
-            [
-              {
-                tag: "notag",
-                value: null,
-              }
-            ],
-          ]
-        }
-      ]
-    )).toBe(true);
-  expect(
-    filter.match(
-      way,
-      [
-        {
-          and: [
-            [{
-              tag: "notag",
-              value: "foo",
-            }],
-            [{
+    filter.match(way, [
+      {
+        and: [
+          [
+            {
+              tag: "cycleway:left",
+              value: "lane",
+            },
+          ],
+          [
+            {
               tag: "notag",
               value: null,
-            }],
-          ]
-        }
-      ]
-    )).toBe(false);
+            },
+          ],
+        ],
+      },
+    ])
+  ).toBe(true);
+  expect(
+    filter.match(way, [
+      {
+        and: [
+          [
+            {
+              tag: "notag",
+              value: "foo",
+            },
+          ],
+          [
+            {
+              tag: "notag",
+              value: null,
+            },
+          ],
+        ],
+      },
+    ])
+  ).toBe(false);
 });

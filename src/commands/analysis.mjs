@@ -1,6 +1,6 @@
-import PQueue from 'p-queue';
-import delay from 'delay';
-import process from 'process';
+import PQueue from "p-queue";
+import delay from "delay";
+import process from "process";
 
 /**
  * Command to run an analysis.
@@ -22,23 +22,27 @@ export default class Analysis {
    * @param {bool} [params.useCache] - Use cached intermediate values, default false.
    */
   async call(params) {
-    const queue = new PQueue({concurrency: 1});
+    const queue = new PQueue({ concurrency: 1 });
     var analysis = params.analysis;
     var areas = await this.areas.getAll();
     console.log(areas.length, "known areas");
     for (const areaX of areas) {
       const area = await this.areas.getArea(areaX.getSlug());
-      if (params.areas && ! params.areas.includes(area.getSlug())) {
+      if (params.areas && !params.areas.includes(area.getSlug())) {
         continue;
       }
       queue.add(async () => {
         console.log("Analysing", area.name);
-        if (! params.useCache) {
+        if (!params.useCache) {
           if (this.list[analysis].refresh) {
-            await this.list[analysis].refresh(area, {extractDate: params.extractDate});
+            await this.list[analysis].refresh(area, {
+              extractDate: params.extractDate,
+            });
           }
         }
-        await this.list[analysis].start(area, {extractDate: params.extractDate});
+        await this.list[analysis].start(area, {
+          extractDate: params.extractDate,
+        });
         console.log("Done Analysing", area.name);
       });
     }
@@ -47,5 +51,5 @@ export default class Analysis {
       process.stdout.write(queue.size + " jobs running");
       await delay(1000);
     }
-  };
+  }
 }

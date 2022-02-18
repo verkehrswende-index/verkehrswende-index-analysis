@@ -1,7 +1,7 @@
-import {promisify} from "util";
+import { promisify } from "util";
 import fs from "fs";
 import zlib from "zlib";
-import {dirname} from "path";
+import { dirname } from "path";
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
@@ -14,8 +14,8 @@ const gzip = promisify(zlib.gzip);
  */
 export default class Store {
   constructor() {
-    this.basePath = 'data/';
-  };
+    this.basePath = "data/";
+  }
 
   /**
    * Reads JSON data from the given path.
@@ -24,10 +24,10 @@ export default class Store {
    * @return {Object} The parsed JSON.
    */
   async read(path) {
-    return await readFile(this.basePath + '/' + path + ".gz")
-      .then( gunzip )
-      .then( JSON.parse );
-  };
+    return await readFile(this.basePath + "/" + path + ".gz")
+      .then(gunzip)
+      .then(JSON.parse);
+  }
 
   /**
    * Writes the given data to the path.
@@ -36,10 +36,10 @@ export default class Store {
    * @param {Object} data The parsed JSON.
    */
   async write(path, data) {
-    const fullPath = this.basePath + '/' + path + ".gz";
-    await mkdir(dirname(fullPath), {recursive: true});
+    const fullPath = this.basePath + "/" + path + ".gz";
+    await mkdir(dirname(fullPath), { recursive: true });
     const json = JSON.stringify(data, null, 4);
     const zipped = await gzip(json);
     await writeFile(fullPath, zipped);
-  };
+  }
 }

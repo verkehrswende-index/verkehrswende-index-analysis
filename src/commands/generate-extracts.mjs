@@ -1,6 +1,6 @@
-import {DOMParser} from "xmldom";
-import {promisify} from "util";
-import {dirname} from "path";
+import { DOMParser } from "xmldom";
+import { promisify } from "util";
+import { dirname } from "path";
 import fs from "fs";
 const exists = promisify(fs.exists);
 const mkdir = promisify(fs.mkdir);
@@ -23,7 +23,7 @@ export default class GenerateExtracts {
    * @param {string} extract - The extract to use, e.g. "germany" or
    * "france/ile-de-france".
    */
-  getDataPath(date,extract="germany") {
+  getDataPath(date, extract = "germany") {
     return `data/raw/osm/${extract}-${date}.osm.pbf`;
   }
 
@@ -36,22 +36,30 @@ export default class GenerateExtracts {
    */
   async call(params) {
     const areas = await this.areas.getAll();
-    for(const area of areas) {
-      if (params.areas && ! params.areas.includes(area.getSlug())) {
+    for (const area of areas) {
+      if (params.areas && !params.areas.includes(area.getSlug())) {
         continue;
       }
       console.log(area.getSlug());
-      const extractPath = `data/cache/osm/extracts/${params.extractDate}/${area.getSlug()}.osm.pbf`;
-      if(await exists(extractPath)) {
+      const extractPath = `data/cache/osm/extracts/${
+        params.extractDate
+      }/${area.getSlug()}.osm.pbf`;
+      if (await exists(extractPath)) {
         continue;
       }
       console.log("create", extractPath);
       const dataPath = this.getDataPath(params.extractDate, area.extract);
-      const boundaryPath = `data/cache/osm/boundaries/${params.extractDate}/${area.getSlug()}.osm.pbf`;
-      await mkdir(dirname(boundaryPath), {recursive: true});
-      await this.osmium.exec(`getid -O -r -t ${dataPath} r${area.id} -o ${boundaryPath}`.split(' ')) ;
-      await mkdir(dirname(extractPath), {recursive: true});
-      await this.osmium.exec(`extract -O -p ${boundaryPath} ${dataPath} -o ${extractPath}`.split(' ')) ;
+      const boundaryPath = `data/cache/osm/boundaries/${
+        params.extractDate
+      }/${area.getSlug()}.osm.pbf`;
+      await mkdir(dirname(boundaryPath), { recursive: true });
+      await this.osmium.exec(
+        `getid -O -r -t ${dataPath} r${area.id} -o ${boundaryPath}`.split(" ")
+      );
+      await mkdir(dirname(extractPath), { recursive: true });
+      await this.osmium.exec(
+        `extract -O -p ${boundaryPath} ${dataPath} -o ${extractPath}`.split(" ")
+      );
     }
-  };
+  }
 }

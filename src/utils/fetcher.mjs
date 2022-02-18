@@ -1,11 +1,12 @@
-import nodeFetch from 'node-fetch';
+import nodeFetch from "node-fetch";
 
 export default class Fetcher {
-  fetch(url,args={}) {
+  fetch(url, args = {}) {
     args.headers = {
       ...args.headers,
-      'User-Agent': 'Verkehrswende-Index Analyser / https://verkehrswende-index.de/',
+      "User-Agent":
+        "Verkehrswende-Index Analyser / https://verkehrswende-index.de/",
     };
-    return nodeFetch(url,args);
-  };
+    return nodeFetch(url, args);
+  }
 }

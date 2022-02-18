@@ -5,5 +5,5 @@ module.exports = {
     "^.+\\.mjs$": "babel-jest",
   },
   testPathIgnorePatterns: ["<rootDir>/build/", "<rootDir>/node_modules/"],
-  moduleFileExtensions: ["js", "jsx", "mjs"]
-}
+  moduleFileExtensions: ["js", "jsx", "mjs"],
+};
