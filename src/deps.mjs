@@ -3,7 +3,6 @@ import NameToSlug from "./geo/name-to-slug.mjs";
 import Areas from "./geo/areas.js";
 import CityInformation from "./geo/city-information.mjs";
 import Filter from "./osm/filter.js";
-import Overpass from "./osm/overpass.js";
 import Fetcher from "./utils/fetcher.mjs";
 
 var deps = {};
@@ -29,10 +28,6 @@ deps = { ...deps, ...osm };
 
 deps["osm.filter"] = (app) => {
   return new Filter();
-};
-
-deps["osm.overpass"] = (app) => {
-  return new Overpass();
 };
 
 import analysis from "./deps/analysis.mjs";
