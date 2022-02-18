@@ -3,6 +3,9 @@ class Overpass {
   constructor(overpass) {
     // this.apiURL = 'https://overpass-api.de/api/interpreter';
     this.apiURL = 'https://overpass.kumi.systems/api/interpreter';
+    // this.apiURL = 'http://78.47.57.82:8989/api/interpreter';
+    // this.apiURL = 'http://localhost:8989/api/interpreter';
+
   }
 
   async query( query, args={} ) {
@@ -10,6 +13,8 @@ class Overpass {
     if ( args.timeSpan === '1y' ) {
       date = "2020-04-14T00:00:00Z";
     }
+    // [maxsize:2000000000] with local osm
+    // [maxsize:1000000000] else?
     const OPquery = `
 [maxsize:2000000000]
 [out:json][timeout:6000]${date ? `[date:"${date}"]` : ''};

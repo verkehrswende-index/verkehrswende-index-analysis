@@ -1,6 +1,6 @@
 var deps = {};
 
-import BikeInfrastructure from '../analysis/bike-infrastructure.js';
+import BikeInfrastructure from '../analysis/bike-infrastructure.mjs';
 deps["analysis.bike-infrastructure"] = ( app ) => {
   return new BikeInfrastructure(
     app['osm.osmium'],

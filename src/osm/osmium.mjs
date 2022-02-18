@@ -7,15 +7,21 @@ export default class Osmium {
   constructor() {
   }
 
-  async query(area, query, args={} ) {
+  /**
+   * Runs a query.
+   *
+   * @param {string} area - Area slug.
+   * @param {string} query - The query to execute.
+   * @param {Object} args - Query arguments.
+   * @param {bool} args.centerPoint
+   * @param {string} args.extractDate - Date of the extract to use.
+   * @returs {Object} A GeoJSON object.
+   */
+  async query(area, query, args={}) {
     var spanInfix = '';
-    if ( args.timeSpan === '1y' ) {
-      spanInfix = '1y.';
-    }
     const out = await this.exec(
-      (`tags-filter -t -f osm data/cache/osm/extracts/${area}.${spanInfix}osm.pbf ${query}`).split(' ')
+      (`tags-filter -t -f osm data/cache/osm/extracts/${args.extractDate}/${area}.osm.pbf ${query}`).split(' ')
     );
-    // const parsed = (new DOMParser()).parseFromString(out, 'text/xml');
     console.log(out.length,'out');
     const parsed = xmlParser.parseFromString(out);
     console.log('parsed');

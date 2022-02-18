@@ -3,6 +3,26 @@ import geojsonLength from 'geojson-length';
 import Audit from 'lighthouse/lighthouse-core/audits/audit.js';
 import Flatbush from 'flatbush';
 
+const filterConfigs = {
+  stop: [
+    {
+      tag: 'highway',
+      value: 'bus_stop',
+    },
+    {
+      tag: 'public_transport',
+      valueRegexp: '^(station|stop_position|platform)$',
+    },
+  ],
+  building: [
+    {
+      tag: 'building',
+    },
+  ],
+};
+
+export { filterConfigs };
+
 export default class StopDistance {
   constructor(osmium, store) {
     this.osmium = osmium;

@@ -16,12 +16,14 @@ Options:
       --cmd=COMMAND                execute COMMAND
       --help                       display this help and exit
 
+      --analysis=ANALYSIS          analysis to start
       --areas=AREAS                areas to consider, AREAS is a comma
                                    seperated list of area slugs
       --extractDate=EXTRACT_DATE   date of extracts to use
+      --use-cache                  use cache for some expensive operations
 
 COMMAND is one of the available commands:
-  analysis
+  analysis                runs analysis. Requires --analysis
   fetch-car-licenses
   fetch-city-information
   fetch-locations         extracts node tags for all cities to consider from OSM
@@ -42,12 +44,14 @@ var argv = minimist(
   process.argv.slice(2),
   {
     string: [
+      "analysis",
       "areas",
       "cmd",
       "extractDate",
     ],
     boolean: [
       "help",
+      "use-cache",
     ],
     unknown: (param) => {
       fail(`Unrecognized option '${param}'`);
@@ -62,7 +66,15 @@ async function main() {
   }
   switch ( argv.cmd ) {
   case 'analysis':
-    await app('cmd.analysis').call(argv);
+    if (! argv.analysis) {
+      fail(`Missing --analysis option`);
+    }
+    await app('cmd.analysis').call({
+      analysis: argv.analysis,
+      areas: argv.areas ? argv.areas.split(',') : null,
+      extractDate: argv.extractDate,
+      useCache: argv['use-cache'] ? true : false,
+    });
     break;
   case 'fetch-car-licenses':
     await app('cmd.fetch-car-licenses').call();
