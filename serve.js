@@ -10,4 +10,4 @@ app.use((req, res, next) => {
 });
 
 app.use("/", expressStaticGzip("data/"));
-app.listen(3000);
+app.listen(3001);
