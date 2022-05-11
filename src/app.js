@@ -1,4 +1,4 @@
-import deps from "./deps.mjs";
+import deps from "./deps.js";
 var deps_instances = {};
 
 for (const dep in deps) {

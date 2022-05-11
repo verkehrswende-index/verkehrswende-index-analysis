@@ -7,7 +7,7 @@ class Area {
   }
 }
 
-class Areas {
+export default class Areas {
   constructor(store, nameToSlug) {
     this.store = store;
     this.nameToSlug = nameToSlug;
@@ -53,5 +53,3 @@ class Areas {
     await this.store.write(`areas/${area.getSlug()}/config.json`, area);
   }
 }
-
-module.exports = Areas;

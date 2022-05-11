@@ -1,4 +1,4 @@
-import app from "./app.mjs";
+import app from "./app.js";
 
 import minimist from "minimist";
 
@@ -49,7 +49,6 @@ var argv = minimist(process.argv.slice(2), {
 });
 
 async function main() {
-  const deps = await import("./app.mjs");
   if (argv.help || !argv.cmd) {
     printHelpAndExit();
   }

@@ -1,4 +1,4 @@
-import NameToSlug from "./name-to-slug.mjs";
+import NameToSlug from "./name-to-slug";
 
 test("Test slug generation", () => {
   var nameToSlug = new NameToSlug();

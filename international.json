@@ -1,0 +1,108 @@
+
+Unused!
+
+      {
+        "type": "area",
+        "id": 3600047811,
+        "tags": {
+          "international": "yes",
+          "name": "Amsterdam"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3602192363,
+        "tags": {
+          "international": "yes",
+          "name": "Kopenhagen"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600419203,
+        "tags": {
+          "international": "yes",
+          "name": "Utrecht"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600047504,
+        "tags": {
+          "international": "yes",
+          "name": "Eindhoven"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3610663667,
+        "tags": {
+          "international": "yes",
+          "name": "Malmö"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600059874,
+        "tags": {
+          "international": "yes",
+          "name": "Nantes"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600105270,
+        "tags": {
+          "international": "yes",
+          "name": "Bordeaux"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600059518,
+        "tags": {
+          "international": "yes",
+          "name": "Antwerpen"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600342563,
+        "tags": {
+          "international": "yes",
+          "name": "Sevilla"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600071033,
+        "tags": {
+          "international": "yes",
+          "name": "Straßburg"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600406091,
+        "tags": {
+          "international": "yes",
+          "name": "Oslo"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3600007444,
+        "tags": {
+          "international": "yes",
+          "name": "Paris"
+        }
+      },
+      {
+        "type": "area",
+        "id": 3601920901,
+        "tags": {
+          "international": "yes",
+          "name": "Edinburgh"
+          "country": "UK"
+        }
+      }

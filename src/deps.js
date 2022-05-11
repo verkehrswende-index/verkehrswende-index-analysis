@@ -1,14 +1,20 @@
-import Store from "./store.mjs";
-import NameToSlug from "./geo/name-to-slug.mjs";
-import Areas from "./geo/areas.js";
-import CityInformation from "./geo/city-information.mjs";
-import Filter from "./osm/filter.js";
-import Fetcher from "./utils/fetcher.mjs";
+import Config from "./config";
+import Store from "./store";
+import NameToSlug from "./geo/name-to-slug";
+import Areas from "./geo/areas";
+import CityInformation from "./geo/city-information";
+import Filter from "./osm/filter";
+import Fetcher from "./utils/fetcher";
 
 var deps = {};
 
 deps["store"] = (app) => {
   return new Store();
+};
+
+deps["config"] = (app) => {
+  console.log(Config);
+  return new Config();
 };
 
 deps["geo.name-to-slug"] = (app) => {
@@ -23,17 +29,17 @@ deps["geo.city-information"] = (app) => {
   return new CityInformation(app["geo.areas"], app["store"]);
 };
 
-import osm from "./deps/osm.mjs";
+import osm from "./deps/osm";
 deps = { ...deps, ...osm };
 
 deps["osm.filter"] = (app) => {
   return new Filter();
 };
 
-import analysis from "./deps/analysis.mjs";
+import analysis from "./deps/analysis";
 deps = { ...deps, ...analysis };
 
-import commands from "./deps/commands.mjs";
+import commands from "./deps/commands";
 deps = { ...deps, ...commands };
 
 deps["utils.fetcher"] = (app) => {

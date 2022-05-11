@@ -6,7 +6,7 @@ var htmlparser = require("htmlparser2");
 var _ = require("osmtogeojson/lodash.custom.js");
 
 var json, buffer;
-var p = new htmlparser.Parser(
+const p = new htmlparser.Parser(
   {
     onopentag: function (name, attr) {
       switch (name) {
@@ -110,4 +110,4 @@ p.getJSON = function () {
   return json;
 };
 
-module.exports = p;
+export default p;

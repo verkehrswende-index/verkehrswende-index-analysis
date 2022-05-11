@@ -1,6 +1,6 @@
 var deps = {};
 
-import FetchLocations from "../commands/fetch-locations.mjs";
+import FetchLocations from "~/commands/fetch-locations";
 deps["cmd.fetch-locations"] = (app) => {
   return new FetchLocations(
     app["osm.osmium"],
@@ -9,27 +9,29 @@ deps["cmd.fetch-locations"] = (app) => {
   );
 };
 
-import Analysis from "../commands/analysis.mjs";
+import Analysis from "~/commands/analysis";
 deps["cmd.analysis"] = (app) => {
-  const list = {
-    bike_infrastructure: app["analysis.bike-infrastructure"],
-    cars_per_resident: app["analysis.cars-per-resident"],
-    stop_distance: app["analysis.stop-distance"],
-  };
+  const list = {};
+  [
+    'bike_infrastructure',
+    'cars_per_resident',
+    'stop_distance',
+    'designated_bike_lane_in_maxspeed_30_zone',
+  ].forEach((v) => { list[v] = v.replace(/_/g, '-'); });
   return new Analysis(list, app["store"], app["geo.areas"]);
 };
 
-import FetchCarLicenses from "../commands/fetch-car-licenses.mjs";
+import FetchCarLicenses from "~/commands/fetch-car-licenses";
 deps["cmd.fetch-car-licenses"] = (app) => {
   return new FetchCarLicenses(app["store"]);
 };
 
-import FetchCityInformation from "../commands/fetch-city-information.mjs";
+import FetchCityInformation from "~/commands/fetch-city-information";
 deps["cmd.fetch-city-information"] = (app) => {
   return new FetchCityInformation(app["store"]);
 };
 
-import FetchMayorsCmd from "../commands/fetch-mayors.mjs";
+import FetchMayorsCmd from "~/commands/fetch-mayors";
 deps["cmd.fetch-mayors"] = (app) => {
   return new FetchMayorsCmd(
     app["store"],
@@ -38,7 +40,7 @@ deps["cmd.fetch-mayors"] = (app) => {
   );
 };
 
-import GenerateExtracts from "../commands/generate-extracts.mjs";
+import GenerateExtracts from "~/commands/generate-extracts";
 deps["cmd.generate-extracts"] = (app) => {
   return new GenerateExtracts(
     app["geo.areas"],
@@ -48,7 +50,7 @@ deps["cmd.generate-extracts"] = (app) => {
   );
 };
 
-import GenerateIndex from "../commands/generate-index.mjs";
+import GenerateIndex from "~/commands/generate-index";
 deps["cmd.generate-index"] = (app) => {
   return new GenerateIndex(
     app["geo.areas"],
@@ -57,7 +59,7 @@ deps["cmd.generate-index"] = (app) => {
   );
 };
 
-import WriteAreaConfigs from "../commands/write-area-configs.mjs";
+import WriteAreaConfigs from "~/commands/write-area-configs";
 deps["cmd.write-area-configs"] = (app) => {
   return new WriteAreaConfigs(app["geo.areas"], app["store"]);
 };

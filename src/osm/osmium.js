@@ -1,7 +1,7 @@
 import osmtogeojson from "osmtogeojson";
 import polygonCenter from "geojson-polygon-center";
 import { spawnSync } from "child_process";
-import xmlParser from "./parse-osmxml.js";
+import xmlParser from "./parse-osmxml";
 
 export default class Osmium {
   constructor() {}

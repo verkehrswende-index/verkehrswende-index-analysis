@@ -1,0 +1,26 @@
+{
+  "compilerOptions":{
+    "target":"es5",
+    "module":"esnext",
+    "rootDir":"./src/",
+    "moduleResolution":"node",
+    "baseUrl":"./src/",
+    "paths":{
+      "~/*":[
+        "./*"
+      ]
+    },
+    "allowJs":true,
+    "outDir":"./dist",
+    "isolatedModules":true,
+    "allowSyntheticDefaultImports":true,
+    "esModuleInterop":true,
+    "forceConsistentCasingInFileNames":true,
+    "strict":false,
+    "skipLibCheck":true
+  },
+  "exclude":[
+    "dist",
+    "node_modules"
+  ]
+}

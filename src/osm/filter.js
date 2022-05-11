@@ -1,4 +1,4 @@
-class Filter {
+export default class Filter {
   // 'and' not supported
   toQuery(filter, areaId) {
     var query = "";
@@ -69,5 +69,3 @@ class Filter {
     return false;
   }
 }
-
-module.exports = Filter;

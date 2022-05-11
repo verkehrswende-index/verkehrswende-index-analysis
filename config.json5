@@ -1,0 +1,11 @@
+{
+  areas: [
+    germany: {
+      osm: {
+        extract: 'germany',
+        useFullExtract: true,
+        relationId: 51477,
+      },
+    },
+  ],
+}
